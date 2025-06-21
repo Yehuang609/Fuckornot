@@ -1,94 +1,53 @@
-<html lang="zh">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>上不上AI评分系统</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>图片上传预览</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+    #preview-image {
+      margin-top: 20px;
+      max-width: 80%;
+      max-height: 400px;
+      border: 1px solid #ccc;
+    }
+    input[type="file"] {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="scanline-overlay"></div>
-    <div class="container">
-        <button id="theme-toggle" class="theme-toggle" aria-label="切换暗色模式">🌞</button>
-        <header>
-            <h1>上不上AI评分系统</h1>
-            <p class="subtitle">上传图片，让AI来评判它的可操性</p>
-        </header>
-        
-        <div class="disclaimer" id="disclaimer">
-            <button class="close-btn" id="close-disclaimer">×</button>
-            <p>⚠️ <strong>免责声明：</strong> 就图一乐，AI就看外形瞎评，甭当真！别拿自己照片试水，怕被喷就闪，审美这玩意儿因人而异！</p>
-        </div>
 
-        <div class="ai-type-selector">
-            <p>选择AI分析模式：</p>
-            <div class="ai-type-options">
-                <label class="ai-type-option">
-                    <input type="radio" name="ai-type" value="brief" checked>
-                    <span class="ai-type-name">简短模式</span>
-                    <span class="ai-type-desc">短平快，1-2句，够味</span>
-                </label>
-                <label class="ai-type-option">
-                    <input type="radio" name="ai-type" value="descriptive">
-                    <span class="ai-type-name">详细模式</span>
-                    <span class="ai-type-desc">细嗦3+句，够劲</span>
-                </label>
-                <label class="ai-type-option">
-                    <input type="radio" name="ai-type" value="novel">
-                    <span class="ai-type-name">小说模式</span>
-                    <span class="ai-type-desc">400字以上，纯硬核</span>
-                </label>
-            </div>
-        </div>
+  <h1>上传图片预览</h1>
 
-        <div class="upload-area" id="upload-area">
-            <div class="upload-inner">
-                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64">
-                    <path d="M11 14.9861C11 15.5384 11.4477 15.9861 12 15.9861C12.5523 15.9861 13 15.5384 13 14.9861V7.82831L16.2428 11.0711L17.657 9.65685L12.0001 4L6.34326 9.65685L7.75748 11.0711L11 7.82854V14.9861Z" fill="currentColor"/>
-                    <path d="M4 14H6V18H18V14H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V14Z" fill="currentColor"/>
-                </svg>
-                <p>拖拽图片到这里或<span class="upload-btn">点击上传</span></p>
-                <input type="file" id="file-input" accept="image/*" hidden>
-            </div>
-        </div>
+  <!-- 图片上传输入框 -->
+  <input type="file" id="file-input" accept="image/*">
 
-        <div class="preview-container hidden" id="preview-container">
-             <div class="image-preview-container">
-                <img id="preview-image" src="" alt="待分析的图片">
-            </div>
-            <div class="preview-actions">
-                <button id="start-analysis-btn" class="btn">🚀 获取AI评分</button>
-                <button id="change-image-btn" class="btn btn-secondary">🔁 换张图</button>
-            </div>
-        </div>
+  <!-- 图片预览展示区域 -->
+  <div>
+    <img id="preview-image" src="" alt="待预览的图片">
+  </div>
 
-        <div class="result-container hidden" id="result-container">
-            <div class="image-preview-container-result" id="image-preview-container-result">
-                <img id="image-preview" src="" alt="上传的图片">
-                <div class="image-overlay">
-                    <p>点击或拖拽以替换图片</p>
-                </div>
-            </div>
-            <div id="loading" class="loading hidden">
-                <div class="spinner"></div>
-                <p>AI正在分析中...</p>
-            </div>
-            <div id="result" class="result hidden">
-                <div class="verdict-container">
-                    <h2 id="verdict">评分：</h2>
-                    <div id="verdict-icon"></div>
-                </div>
-                <p id="explanation"></p>
-                <div class="result-actions">
-                    <button id="try-again" class="btn">🔁 再试一次</button>
-                    <!-- Save and Share buttons will be injected here -->
-                </div>
-            </div>
-        </div>
-        <button class="btn view-saved-btn" id="view-saved">📁 查看保存的结果</button>
-    </div>
-    <script type="module" src="main.js"></script>
+  <script>
+    // 监听文件选择
+    document.getElementById("file-input").addEventListener("change", function (e) {
+      const file = e.target.files[0]; // 获取上传的文件
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        // 将图片显示在 <img> 中
+        document.getElementById("preview-image").src = reader.result;
+      };
+
+      if (file) {
+        reader.readAsDataURL(file); // 将文件转为 base64
+      }
+    });
+  </script>
+
 </body>
 </html>
